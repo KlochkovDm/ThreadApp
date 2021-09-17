@@ -1,6 +1,8 @@
 package com.example.threadsapp.ui.main
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.HandlerThread
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -39,7 +41,7 @@ class ThreadFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.button.setOnClickListener {
-            binding.textView.text = startCalulation(binding.editText.text.toString().toInt())
+            binding.textView.text = startCalculation(binding.editText.text.toString().toInt())
             binding.mainContainer.addView(AppCompatTextView(it.context).apply{
                 text = getString(R.string.in_main_thread)
                 textSize = resources.getDimension(R.dimen.main_container_text_size)
@@ -50,7 +52,7 @@ class ThreadFragment : Fragment() {
             Thread {
                 counterThread++
                 val cntrThread = counterThread
-                val calculatedResult = startCalulation(binding.editText.text.toString().toInt())
+                val calculatedResult = startCalculation(binding.editText.text.toString().toInt())
                 activity?.runOnUiThread {
                     binding.textView.text = calculatedResult
 
@@ -62,9 +64,36 @@ class ThreadFragment : Fragment() {
             }.start()
         }
 
+        val handlerThread = HandlerThread(getString(R.string.my_handler_thread))
+        handlerThread.start()
+        val handler = Handler(handlerThread.looper)
+        binding.calcThreadHandler.setOnClickListener {
+            counterThread++
+            val cntrThread = counterThread
+            binding.mainContainer.addView(AppCompatTextView(it.context).apply {
+                text = String.format(
+                    getString(R.string.in_handler_thread),
+                    handlerThread.name + " " + cntrThread
+                )
+                textSize = resources.getDimension(R.dimen.main_container_text_size)
+            })
+            handler.post{
+                startCalculation(binding.editText.text.toString().toInt())
+                binding.mainContainer.post{
+                    binding.mainContainer.addView(AppCompatTextView(it.context).apply {
+                        text = String.format(
+                            getString(R.string.from_handler_thread),
+                            handlerThread.name + " " + cntrThread
+                        )
+                        textSize = resources.getDimension(R.dimen.main_container_text_size)
+                    })
+                }
+            }
+        }
+
     }
 
-    private fun startCalulation(seconds: Int): CharSequence? {
+    private fun startCalculation(seconds: Int): CharSequence? {
         val date = Date()
         var diffInSecs: Long
         do {

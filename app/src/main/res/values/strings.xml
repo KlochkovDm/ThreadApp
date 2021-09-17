@@ -5,6 +5,8 @@
     <string name="from_thread">Из потока %d</string>
     <string name="in_thread">Выводим в потоке %s</string>
     <string name="calculate_in_thread">Считаем в потоке %s</string>
+    <string name="in_handler_thread">Запускаем поток %s</string>
+    <string name="from_handler_thread">Возвращаемся в поток %s</string>
     <string name="my_handler_thread">My_Handler_Thread</string>
     <string name="hello_from_thread_fragment">Hello from ThreadsFragment</string>
     <string name="calculate">Расчёт</string>
@@ -13,4 +15,7 @@
     <string name="handler_thread">Handler_Thread</string>
     <string name="service">Service</string>
     <string name="service_broadcast">Service + Broadcast</string>
+    <string name="calculate_in_handler_thread">Запускаем в поток %s</string>
+    <string name="return_from_handler_thread">Возвращаемся в поток %s</string>
+    <string name="job_service">Job Service</string>
 </resources>
