@@ -13,6 +13,9 @@ class MyIntentService (name: String = "MyIntentService"): IntentService(name) {
         val arg = intent?.extras?.getInt(DURATION) ?: 10
         Log.d("MyIntentService", "onHandleIntent start duration: " + arg)
         startCalculation(arg)
+        val broadcastIntent = Intent(TEST_BROADCAST_INTENT_FILTER)
+        broadcastIntent.putExtra(THREADS_FRAGMENT_BROADCAST_EXTRA,"Service take " + arg + " sec")
+        sendBroadcast(broadcastIntent)
         Log.d("MyIntentService", "onHandleIntent finish")
     }
 

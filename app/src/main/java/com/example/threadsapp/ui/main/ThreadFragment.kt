@@ -2,8 +2,7 @@ package com.example.threadsapp.ui.main
 
 import android.app.job.JobInfo
 import android.app.job.JobScheduler
-import android.content.ComponentName
-import android.content.Intent
+import android.content.*
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
@@ -18,6 +17,9 @@ import com.example.threadsapp.databinding.ThreadFragmentBinding
 import java.util.*
 import java.util.concurrent.TimeUnit
 
+const val TEST_BROADCAST_INTENT_FILTER = "TEST BROADCAST INTENT FILTER"
+const val THREADS_FRAGMENT_BROADCAST_EXTRA = "THREADS_FRAGMENT_EXTRA"
+
 class ThreadFragment : Fragment() {
 
     private var _binding : ThreadFragmentBinding? = null
@@ -29,16 +31,30 @@ class ThreadFragment : Fragment() {
         fun newInstance() = ThreadFragment()
     }
 
+    private val testReceiver : BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            intent.getStringExtra(THREADS_FRAGMENT_BROADCAST_EXTRA)?.let {
+                binding.mainContainer.addView(AppCompatTextView(context).apply {
+                    text = it
+                    textSize = resources.getDimension(R.dimen.main_container_text_size)
+                })
+            }
+        }
+    }
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = ThreadFragmentBinding.inflate(inflater,container, false)
+        context?.registerReceiver(testReceiver, IntentFilter(TEST_BROADCAST_INTENT_FILTER))
         return binding.root
     }
 
     override fun onDestroyView() {
         _binding = null
+        context?.unregisterReceiver(testReceiver)
         super.onDestroyView()
     }
 
